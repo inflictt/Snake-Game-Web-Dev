@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <!-- style.css se design aayega -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main>
+        <section>
+            <!--
+                INFO BAR
+                - 3 boxes: High Score, Score, Time
+                - CSS: justify-content: space-between
+                  → teeno left / center / right mein jaate hain
+                - Span IDs se JS directly text update karega:
+                  document.getElementById('score').textContent = 5
+            -->
+            <div class="infos">
+                <div class="info">High Score: <span id="high-score">0</span></div>
+                <div class="info">Score: <span id="score">0</span></div>
+                <div class="info">Time: <span id="time">00:00</span></div>
+            </div>
+
+            <!--
+                GAME BOARD
+                - Ye div khali hai — JS dynamically cells inject karega
+                - CSS: display:grid + flex:1 (section ka bacha hua space)
+                - JS createGrid() mein:
+                    cols = Math.floor(clientWidth  / blockWidth)
+                    rows = Math.floor(clientHeight / blockHeight)
+                  Phir cols*rows <div class="block"> cells banayega
+                  aur blocks{"row-col"} map mein store karega
+            -->
+            <div class="board"></div>
+        </section>
+
+        <!--
+            MODAL OVERLAY
+            - position: fixed → poori screen pe overlay
+            - 2 screens andar:
+                1. .start-game → game shuru hone se pehle (default visible)
+                2. .game-over  → collision ke baad (.hidden class lagi hai)
+            - JS .hidden class add/remove se toggle karta hai
+            - Section ke BAHAR rakha:
+              fixed positioning section ke andar clip ho sakti thi
+        -->
+        <div class="modal">
+            <!-- Screen 1: Welcome — default visible -->
+            <div class="start-game">
+                <h3>Welcome to Snake Gamer</h3>
+                <button class="btn btn-start">Start Game</button>
+            </div>
+
+            <!-- Screen 2: Game Over — default hidden (.hidden class) -->
+            <div class="game-over hidden">
+                <h3>Game Over!</h3>
+                <button class="btn btn-restart">Restart Game</button>
+            </div>
+        </div>
+    </main>
+
+    <!--
+        SCRIPT TAG — defer attribute kyun?
+        - defer = HTML poora parse hone ke BAAD JS chalega
+        - Bina defer: JS pehle chalta, DOM ready nahi hota
+          querySelector('.board') = null → error!
+        - defer se guarantee: jab JS chalega, sab elements ready honge
+    -->
+    <script src="script.js" defer></script>
+</body>
+</html>

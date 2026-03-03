@@ -1,0 +1,248 @@
+/*
+==============================================
+  SNAKE GAME — style.css
+  Structure:
+    1. Reset
+    2. CSS Variables (colors)
+    3. Body
+    4. Section (main layout container)
+    5. Info Bar (score/highscore/time)
+    6. Board + Grid Cells
+    7. Snake + Food styles
+    8. Modal (Start / Game Over screens)
+    9. Utility (.hidden)
+    10. Button
+==============================================
+*/
+
+
+/* ─────────────────────────────────────────
+   1. RESET
+   - Sabhi elements ka default margin/padding 0 karo
+   - box-sizing: border-box:
+     NORMAL:      width = content only
+     BORDER-BOX:  width = content + padding + border
+     Isse layout predictable rehta hai
+───────────────────────────────────────── */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* ─────────────────────────────────────────
+   2. CSS VARIABLES
+   - :root = poore document ka root element
+   - var(--name) se kahi bhi use kar sako
+   - Ek jagah color change karo → sab jagah update
+───────────────────────────────────────── */
+:root {
+    --bg-primary-color: #0c0c0c;      /* dark background */
+    --bg-fill-color: #630909;         /* snake ka dark red color */
+    --bg-food-color: #c811d5;         /* food ka magenta/pink color */
+    --text-primary-color: #f0f0f0;    /* light text */
+    --border-primary-color: #857c7c;  /* subtle gray border */
+}
+
+
+/* ─────────────────────────────────────────
+   3. BODY
+   - Dark background
+   - height: 100vh = poori viewport height
+   - overflow: hidden = scroll nahi hogi page pe
+───────────────────────────────────────── */
+body {
+    background-color: var(--bg-primary-color);
+    color: var(--text-primary-color);
+    font-family: sans-serif;
+    height: 100vh;
+    overflow: hidden;
+}
+
+
+/* ─────────────────────────────────────────
+   4. SECTION — Main Layout Container
+   - flex + column = info bar upar, board neeche
+   - height: 100vh = poori screen height
+   - padding: 20px = edges se thoda space
+   - box-sizing: border-box = padding height
+     mein count hogi (overflow nahi hogi)
+
+   VISUAL:
+   ┌──────────────────────┐ ← 100vh
+   │   padding: 20px      │
+   │   ┌──────────────┐   │
+   │   │   .infos     │   │ ← fixed height
+   │   └──────────────┘   │
+   │   margin-bottom: 20px│
+   │   ┌──────────────┐   │
+   │   │              │   │
+   │   │   .board     │   │ ← flex:1 (bacha hua space)
+   │   │              │   │
+   │   └──────────────┘   │
+   │   padding: 20px      │
+   └──────────────────────┘
+───────────────────────────────────────── */
+section {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+
+/* ─────────────────────────────────────────
+   5. INFO BAR
+   - flex + space-between = teeno boxes
+     left / center / right mein jaate hain
+   - width: 100% = poori width lo
+   - margin-bottom: 20px = board se gap
+───────────────────────────────────────── */
+.infos {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* Har ek info box ka style */
+.info {
+    padding: 10px;
+    border: 1px solid var(--border-primary-color);
+    border-radius: 8px;
+}
+
+
+/* ─────────────────────────────────────────
+   6. BOARD
+   - flex: 1 = section ka bacha hua sara
+     vertical space le lo (info bar ke baad)
+   - display: grid = andar cells grid mein hongi
+     (gridTemplateColumns/Rows JS se set hoga)
+   - width: 100% = poori available width lo
+   - JS board.style.width aur height set karega:
+       cols * blockWidth  px
+       rows * blockHeight px
+   - overflow: hidden = agar koi remainder pixels
+     bache toh chhupo (border ke andar rakho)
+   - margin: 0 auto = horizontally center karo
+───────────────────────────────────────── */
+.board {
+    flex: 1;
+    display: grid;
+    width: 100%;
+    margin: 0 auto;
+    background-color: #000;
+    border: 1px solid var(--border-primary-color);
+    overflow: hidden;
+}
+
+
+/* ─────────────────────────────────────────
+   7. GRID CELLS — Snake aur Food
+
+   .block = har ek grid cell
+   - Sirf ek subtle border hai
+   - Background transparent (black board dikhega)
+
+   .fill = snake ka body part
+   - Dark red background
+
+   .food = food item
+   - Magenta/pink background
+   - border-radius: 50% = circle shape
+───────────────────────────────────────── */
+.block {
+    /* Grid cell ki subtle border — grid lines dikhne ke liye */
+    border: 0.1px solid rgba(133, 124, 124, 0.2);
+}
+
+/* Snake body — JS classList.add('fill') karta hai */
+.fill {
+    background-color: var(--bg-fill-color);
+}
+
+/* Food — JS classList.add('food') karta hai */
+.food {
+    background-color: var(--bg-food-color);
+    border-radius: 50%; /* Square cell ko circle banao */
+}
+
+
+/* ─────────────────────────────────────────
+   8. MODAL — Overlay (Start / Game Over)
+
+   - position: fixed = viewport ke relative
+     scroll se affect nahi hota
+   - inset: 0 0 0 0 (top/right/bottom/left sab 0)
+     = poori screen cover karta hai
+   - pointer-events: none = modal ke bahar
+     clicks pass through ho jayenge
+   - z-index: 100 = sab cheezoon ke upar
+
+   .start-game aur .game-over:
+   - position: absolute + top/left 50% +
+     transform: translate(-50%, -50%)
+     = perfectly center mein
+   - pointer-events: all = buttons clickable honge
+───────────────────────────────────────── */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+}
+
+/* Start screen aur Game Over screen — same style */
+.start-game,
+.game-over {
+    /* Perfect centering trick:
+       top/left 50% = top-left corner center pe jaata hai
+       translate(-50%, -50%) = apni width/height ka
+       aadha minus karo → perfectly center */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    background-color: rgb(39, 99, 114);
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    pointer-events: all; /* clicks enable */
+}
+
+
+/* ─────────────────────────────────────────
+   9. UTILITY CLASS — .hidden
+   - display: none = element DOM mein hai
+     lekin screen pe nahi dikhta
+   - !important = koi bhi doosra rule
+     override nahi kar sakta
+   - JS classList.add('hidden') se chhupaate hain
+   - JS classList.remove('hidden') se dikhate hain
+───────────────────────────────────────── */
+.hidden {
+    display: none !important;
+}
+
+
+/* ─────────────────────────────────────────
+   10. BUTTON
+   - cursor: pointer = hover pe hand icon
+   - border: none = default browser border hatao
+   - font-weight: bold = readable text
+───────────────────────────────────────── */
+.btn {
+    margin-top: 15px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
